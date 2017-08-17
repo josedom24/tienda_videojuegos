@@ -4,5 +4,5 @@ Flask-Bootstrap
 Flask-WTF
 Flask-Sqlalchemy
 Flask-Login
-mysql-python
 configparser
+mysql-python
