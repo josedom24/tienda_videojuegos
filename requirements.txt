@@ -5,3 +5,4 @@ Flask-WTF
 Flask-Sqlalchemy
 Flask-Login
 pymysql
+gnuicorn
