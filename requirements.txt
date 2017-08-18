@@ -4,4 +4,4 @@ Flask-Bootstrap
 Flask-WTF
 Flask-Sqlalchemy
 Flask-Login
-mysqlclient
+pymysql
