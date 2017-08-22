@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 MAINTAINER José Domingo Muñoz
-RUN apt-get update -y && apt-get install -y apache2 libapache2-mod-wsgi-py3 python3-p$
+RUN apt-get update -y && apt-get install -y apache2 libapache2-mod-wsgi-py3 python3-pip && apt-get clean && rm -rf /var/lib/apt/lists/*
 ADD /tienda_videojuegos /var/www/html/tienda_videojuegos 
 RUN chown www-data:www-data -R /var/www/html/tienda_videojuegos
 RUN pip3 install -r /var/www/html/tienda_videojuegos/requirements.txt 
@@ -14,4 +14,5 @@ EXPOSE 80
 WORKDIR /var/www/html/tienda_videojuegos
 COPY ./run.sh /
 ENTRYPOINT ["/run.sh"]
+
 
