@@ -1,94 +1,66 @@
-# Despliegue de aplicación flask en un servidor LAMP
+# Despliegue de aplicación flask en hosting pythonanywhere
 
-Vamos a desplegar nuestra aplicación web desarrollada con flask en un servidor LAMP (Linux+Apache2+mysql+python) en un sistema operativo GNU/Linux Ubuntu 16.04.
-
-## Configuración del servidor 
-
-Después de actualizar los páquetes del sistema:
-
-	$ sudo apt-get update
-	$ sudo apt-get upgrade
-
-Hacemos la instalación del servidor web y del servidor de bases de datos:
-
-	$ sudo apt-get install apache2 mysql-server libapache2-mod-wsgi-py3
+En este ejemplo vamos a desplegar nuestra aplicación en un hosting que nos permite trabajar con python llamado [PythonAnywhere](https://www.pythonanywhere.com/), que nos ofrece distintos [planes de contratación](https://www.pythonanywhere.com/pricing/), aunque nostros vamos a usar el **Beginner** que es gratuito y para aplicaciones de prueba con pocos accesos es suficiente.
 
 ## Configuración de la base de datos
 
-Vamos a crear un usuario y una base de datos con la que vamos a a trabajar:
+PythonAnywhere nos da la posibilidad de trabajar con mysql y con postgres. En nuestro caso en la pestaña `Databases` del dashboard, vamos a crear una base de datos mysql con una base de datos: `josedom24$tienda`:
 
-	$ mysql -u root -p
+![bd](img/bd.png)
 
-	mysql> create database tienda;
-	mysql> GRANT ALL ON tienda.* TO usuario IDENTIFIED BY 'usuario';
+Por lo tanto tendremos que configurar nuetra aplicación, para indicar la nuevas credenciales de la base de datos, para ello modificamos el fichero `confi.py`:
 
+	SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://josedom24:usuario1234@josedom24.mysql.pythonanywhere-services.com/josedom24$tienda'
 
-Además vamos a configurar nuetra aplicación para que trabaje con mysql, para ello en el fichero `aplicacion\config.py` modificamos el motor de base de datos con el que vamos a trabajr, indicando las credenciales del usuario y la base de datos:
+## Configuración de nuetra aplicación
 
-	SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://ususario:usuario@localhost/tienda'
+En este ejemplo vamos amoficar el fichero `app.wsgi` para indicar el directorio de trabajo, además no vamos activar el entrono virtual:
 
-Por último añadimos en el fichero `requirements.txt` el paquete que me permite que python trabaje con mysql:
+	import sys
+	sys.path.insert(0, '/home/josedom24/tienda_videojuegos')
+	from aplicacion.app import app as application
 
-	...
-	PyMySQL==0.7.11
+## Despliegue de nuetra aplicación
 
-## Despliegue de la aplicación:
+En la pestaña `Consoles` de PythonAnywhere podemos abrir consolos con los distintos interpretes python, con bash o con mysql, vamos a abrir una consola bash para comenzar el despliegue:
 
-clonamos la rama `lamp` del repositorio: `https://github.com/josedom24/tienda_videojuegos.git`, lo hacemos como superusuario en el directorio `/var/www/html`:
+![consoles](https://raw.githubusercontent.com/josedom24/curso_flask/master/curso/u34/img/consoles.png)
 
-	$ sudo su -
-	$ cd /var/www/html
-	$ git clone https://github.com/josedom24/tienda_videojuegos.git -b lamp
+![consoles2](https://raw.githubusercontent.com/josedom24/curso_flask/master/curso/u34/img/consoles2.png)
 
-Como usuario sin privilegios vamos a crear un entorno virtual, donde vamos a instlar las dependencias de nuetra aplicación:
+Vamos a clonar nuestro repositorio, crear un repositorio e instalar las dependencias:
 
-	$ sudo apt-get install python-virtualenv
-	$ mkdir venv
-	$ cd venv/
-	~/venv$ virtualenv -p /usr/bin/python3 flask
-	~/venv$ source flask/bin/activate
-	(flask) ~/venv$ pip install -r /var/www/html/tienda_videojuegos/requirements.txt 
+	$ git clone https://github.com/josedom24/tienda_videojuegos.git -b pythonanywhere
+	$ mkvirtualenv --python=/usr/bin/python3.4 flask
+	$ workon flask
+	(flask)$ pip install -r tienda_videojuegos/requirements.txt
 
-Creamos las tablas, añadimos los datos de ejemplo y creamos al usuario administrador:
+A continuación podemos crear las tablas, cargar los datos de ejemplo y crear el administrador:
 
-	(flask)$ cd /var/www/html/tienda_videojuegos
+	(flask)$ cd tienda_videojuegos
 	(flask)$ python3 manage.py create_tables
 	(flask)$ python3 manage.py add_data_tables
 	(flask)$ python3 manage.py create_admin
 
+Nota: Si queremos modificar cualquier fichero de nuestro proyecto lo podemos hacer desde la pestaña `Files`.
 
-En el directorio `/var/www/html/tienda_viedojuegos` hemos creado nuestra aplicación WSGI en el fichero `app.wsgi`, donde activamos el entorno virtual que hemos creado:
+## Creando una nueva aplicación
 
-	import sys
-	sys.path.insert(0, '/var/www/html/tienda_videojuegos')
-	activate_this = '/home/ubuntu/venv/flask/bin/activate_this.py'
-	with open(activate_this) as file_:
-	    exec(file_.read(), dict(__file__=activate_this))	
+Por último en la pestaña `Web` tenemos que crear una nueva aplicación:
 
-	from aplicacion.app import app as application	
-	
-	
-Por último configuramos apache2 modificando el virtualhost del fichero /etc/apache2/sites-available/000-default.conf`:
-Y configuramos el virtualhost:
+Elegimos la opción "Manual configuration" para poder indicar el entorno virtual que hemos creado:
 
-	...
-	DocumentRoot /var/www/html/tienda_videojuegos/aplicacion
-    WSGIDaemonProcess tienda user=www-data group=www-data threads=5
-    WSGIScriptAlias / /var/www/html/tienda_videojuegos/app.wsgi
+![web1](https://raw.githubusercontent.com/josedom24/curso_flask/master/curso/u34/img/web1.png)
 
-    <Directory /var/www/html/tienda_videojuegos/aplicacion>
-        WSGIProcessGroup tienda
-        WSGIApplicationGroup %{GLOBAL}
-        Require all granted
-    </Directory>
-    ...
+Elegimos la versión de python (en este caso la misma con la que hemos creado el entorno virtual, python 3.4) y ya tenemos la aplicación creada. Sólo nos queda indicar la ruta donde se encuentra nuetro entorno virtual, en la sección **Virtualenv**:
 
-Donde definimos el proceso WSGI con la directiva `WSGIDaemonProcess` e indicamos el fichero dende se encuentra la aplicación WSGI con la directiva `WSGISrctiptAlias`, además de dar los permisos de acceso necesarios.
+![web2](https://raw.githubusercontent.com/josedom24/curso_flask/master/curso/u34/img/web2.png)
 
-Terminamos reiniciando el servidor:
+Y modificar el fichero ` /var/www/josedom24_pythonanywhere_com_wsgi.py
+` en el apartado "WSGI configuration file:" de la sección "Code":
 
-	$ sudo service apache2 restart
+![web3](https://raw.githubusercontent.com/josedom24/curso_flask/master/curso/u34/img/web3.png)
 
-Y probando el acceso a la aplicación:
+Por útimo reinicimaos el servidor pulsando el botón "Reload ..." y accedemos a la página:
 
-![web](https://raw.githubusercontent.com/josedom24/curso_flask/master/curso/u33/img/web.png)
+![web4](https://raw.githubusercontent.com/josedom24/curso_flask/master/curso/u34/img/web4.png)
