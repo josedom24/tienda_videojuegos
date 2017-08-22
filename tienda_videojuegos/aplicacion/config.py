@@ -5,6 +5,6 @@ PWD = os.path.abspath(os.curdir)
 
 DEBUG = True
 #SQLALCHEMY_DATABASE_URI = 'sqlite:///{}/dbase.db'.format(PWD)
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://usuario:usuario@localhost/tienda'
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:asdasd@{}/tienda'.format(os.environ["MYSQL_PORT_3306_TCP_ADDR"])
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
