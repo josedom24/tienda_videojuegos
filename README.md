@@ -1,6 +1,6 @@
 # Despliegue de aplicación flask en hosting pythonanywhere
 
-En este ejemplo vamos a desplegar nuestra aplicación en un hosting que nos permite trabajar con python llamado [PythonAnywhere](https://www.pythonanywhere.com/), que nos ofrece distintos [planes de contratación](https://www.pythonanywhere.com/pricing/), aunque nostros vamos a usar el **Beginner** que es gratuito y para aplicaciones de prueba con pocos accesos es suficiente.
+En este ejemplo vamos a desplegar nuestra aplicación en un hosting que nos permite trabajar con python llamado [PythonAnywhere](https://www.pythonanywhere.com/), que nos ofrece distintos [planes de contratación](https://www.pythonanywhere.com/pricing/), aunque nosotros vamos a usar el **Beginner** que es gratuito y para aplicaciones de prueba con pocos accesos es suficiente.
 
 ## Configuración de la base de datos
 
@@ -14,7 +14,7 @@ Por lo tanto tendremos que configurar nuetra aplicación, para indicar la nuevas
 
 ## Configuración de nuetra aplicación
 
-En este ejemplo vamos amoficar el fichero `app.wsgi` para indicar el directorio de trabajo, además no vamos activar el entrono virtual:
+En este ejemplo vamos a modificar el fichero `app.wsgi` para indicar el directorio de trabajo, además no vamos activar el entrono virtual:
 
 	import sys
 	sys.path.insert(0, '/home/josedom24/tienda_videojuegos')
@@ -22,7 +22,7 @@ En este ejemplo vamos amoficar el fichero `app.wsgi` para indicar el directorio 
 
 ## Despliegue de nuetra aplicación
 
-En la pestaña `Consoles` de PythonAnywhere podemos abrir consolos con los distintos interpretes python, con bash o con mysql, vamos a abrir una consola bash para comenzar el despliegue:
+En la pestaña `Consoles` de PythonAnywhere podemos abrir consolas con los distintos interpretes python, con bash o con mysql, vamos a abrir una consola bash para comenzar el despliegue:
 
 ![consoles](https://raw.githubusercontent.com/josedom24/curso_flask/master/curso/u34/img/consoles.png)
 
@@ -52,7 +52,7 @@ Elegimos la opción "Manual configuration" para poder indicar el entorno virtual
 
 ![web1](https://raw.githubusercontent.com/josedom24/curso_flask/master/curso/u34/img/web1.png)
 
-Elegimos la versión de python (en este caso la misma con la que hemos creado el entorno virtual, python 3.4) y ya tenemos la aplicación creada. Sólo nos queda indicar la ruta donde se encuentra nuetro entorno virtual, en la sección **Virtualenv**:
+Elegimos la versión de python (en este caso la misma con la que hemos creado el entorno virtual, python 3.4) y ya tenemos la aplicación creada. Sólo nos queda indicar la ruta donde se encuentra nuestro entorno virtual, en la sección **Virtualenv**:
 
 ![web2](https://raw.githubusercontent.com/josedom24/curso_flask/master/curso/u34/img/web2.png)
 
