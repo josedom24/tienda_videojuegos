@@ -21,9 +21,9 @@ from aplicacion.models import Articulos,Categorias,Usuarios
 
 @app.route('/')
 @app.route('/categoria/<id>')
-def inicio(id='0'):
+def inicio(id='1'):
 	categoria=Categorias.query.get(id)
-	if id=='0':
+	if id=='1':
 		articulos=Articulos.query.all()
 	else:
 		articulos=Articulos.query.filter_by(CategoriaId=id)
